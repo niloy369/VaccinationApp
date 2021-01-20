@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  VaccinationApp
+
+  Sample SAM Template for VaccinationApp
+  
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: hello-world/
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Events:
+        HelloWorld:
+          Type: Api 
+          Properties:
+            Path: /hello
+            Method: get
+  VaccinationFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: vaccination/
+      Handler: app.postForm
+      Runtime: nodejs12.x
+      Events:
+        Vaccination:
+          Type: Api 
+          Properties:
+            Path: /vaccination
+            Method: post
+  VaccinationDynamoDb:
+    Type: AWS::DynamoDB::Table 
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnit: 1
+        WriteCapacityUnit: 1
+      TableName: VaccinationDB
